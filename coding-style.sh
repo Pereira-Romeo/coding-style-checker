@@ -30,7 +30,7 @@ then
     DELIVERY_DIR=$(my_readlink "$1")
     DOCKER_SOCKET_PATH=/var/run/docker.sock
     HAS_SOCKET_ACCESS=$(test -r $DOCKER_SOCKET_PATH; echo "$?")
-    GHCR_REGISTRY_TOKEN=$(curl -s "https://ghcr.io/token?service=ghcr.io&scope=repository:epitech/coding-style-checker:pull" | grep -o '"token":"[^"]*' | grep -o '[^"]*$') 
+    GHCR_REGISTRY_TOKEN=$(curl -s "https://ghcr.io/token?service=ghcr.io&scope=repository:epitech/coding-style-checker:pull" | grep -o '"token":"[^"]*' | grep -o '[^"]*$')
     GHCR_REPOSITORY_STATUS=$(curl -I -f -s -o /dev/null -H "Authorization: Bearer $GHCR_REGISTRY_TOKEN" "https://ghcr.io/v2/epitech/coding-style-checker/manifests/latest" && echo 0 || echo 1)
     BASE_EXEC_CMD="docker"
     EXPORT_FILE="$REPORTS_DIR"/coding-style-reports.log
@@ -43,7 +43,7 @@ then
         echo "WARNING: Socket access is denied"
         echo "To fix this we will add the current user to docker group with : sudo usermod -a -G docker $USER"
         read -p "Do you want to proceed? (yes/no) " yn
-        case $yn in 
+        case $yn in
             yes | Y | y | Yes | YES) echo "ok, we will proceed";
                 sudo usermod -a -G docker $USER;
                 echo "You must reboot your computer for the changes to take effect";;
@@ -61,7 +61,7 @@ then
     else
         echo "WARNING: Skipping image download"
     fi
-   
+
 
     ### generate reports
     $BASE_EXEC_CMD run --rm --security-opt "label:disable" -i -v "$DELIVERY_DIR":"/mnt/delivery" -v "$REPORTS_DIR":"/mnt/reports" ghcr.io/epitech/coding-style-checker:latest "/mnt/delivery" "/mnt/reports"
