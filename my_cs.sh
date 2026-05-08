@@ -16,6 +16,7 @@ while IFS= read -r -d '' file; do
         #skip empty lines and comments
         [[ -z "$line" || "$line" =~ ^# ]] && continue
 
+        #append the $(dirname $file) so that the pattern applies to the same scope as the .gitignore it is in
         FILE_PATTERN_TO_IGNORE+=("$line")
     done < "$file"
 
@@ -49,14 +50,21 @@ if (( ${#FILE_PATTERN_TO_IGNORE[@]} > 0 )); then
     LOGS=$(grep -v "$GREP_PATTERN" $EXPORT_FILE)
     IGNORED=$(grep -c "$GREP_PATTERN" $EXPORT_FILE)
 
-    echo "Ignoring $IGNORED issues due to gitignores. use flag --all to print them anyway (not yet implemented :D)"
+    echo "Ignoring $IGNORED issues due to gitignores." #from the following files:"
+    # for entry in "${FILE_PATTERN_TO_IGNORE[@]}"; do
+
+    #     while IFS= read -r -d '' file; do
+    #         echo "$file"
+    #     done < <(find . -iname "$entry" -print0)
+    # done
+    # echo "use flag --all to print them anyway (not yet implemented :D)"
 
 else
     echo "no files to ignore"
     LOGS=$(cat $EXPORT_FILE)
 fi
 
-if [[ ! -s "$LOGS" ]]; then
+if [ -z "$LOGS" ]; then
     echo "No cs errors" | lolcat
 else
     echo "Errors:" | lolcat
